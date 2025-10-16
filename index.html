@@ -41,8 +41,8 @@ input[type="text"] { width: 90%; padding: 10px; margin: 10px 0; border-radius: 1
     font-size: 1.5em;
     color: white;
 }
-label[for^="m"] { color: #3498db; }  /* azul para masculino */
-label[for^="f"] { color: #ff3864; }  /* rosa/vermelho para feminino */
+label[for^="m"] { color: #3498db; }
+label[for^="f"] { color: #ff3864; }
 .sexo-btns label:hover { background-color: rgba(255,255,255,0.4); }
 .sexo-btns input:checked + label { background-color: #ff3864; color: white; }
 
@@ -76,7 +76,7 @@ button[type="submit"]:hover { transform: scale(1.05); }
     75% { transform: scale(1.1); }
 }
 
-/* Confetes / corações caindo */
+/* Corações caindo */
 .heart-fall {
     position: absolute;
     font-size: 20px;
@@ -155,25 +155,48 @@ document.getElementById('form-jogo').addEventListener('submit', function(e){
     let porcentagem = 0;
     let mensagem = '';
 
-    const encontrado = casaisFixos.some(casal =>
-        (casal[0] === nome1 && casal[1] === nome2) || (casal[0] === nome2 && casal[1] === nome1)
-    );
+    // --- Lógica especial Thais + Paula ---
+    const casalThaisPaula = 
+        ( (nome1 === 'thais' && nome2 === 'paula') || 
+          (nome1 === 'paula' && nome2 === 'thais') );
 
-    if (encontrado) {
-        porcentagem = 100;
-        mensagem = '💍 Alma gêmea detectada!';
-    } else if (
-        (nome1 === 'sophia' && nome2 === 'thais') ||
-        (nome1 === 'thais' && nome2 === 'sophia')
-    ) {
-        porcentagem = Math.floor(Math.random() * 10) + 40; // 40 a 49%
-        mensagem = '😅 Parece que não vai dar certo...';
+    if (casalThaisPaula) {
+        let contador = parseInt(localStorage.getItem('thaisPaulaCount') || '0') + 1;
+
+        if (contador < 3) {
+            porcentagem = Math.floor(Math.random() * 9) + 91; // 91–99%
+            mensagem = '😍 Tem tudo pra dar certo!';
+        } else {
+            porcentagem = 100;
+            mensagem = '💍 Alma gêmea detectada!';
+            criarConfetes();
+            contador = 0; // reinicia depois da 3ª vez
+        }
+
+        localStorage.setItem('thaisPaulaCount', contador);
     } else {
-        porcentagem = Math.floor(Math.random() * 60) + 40; // 40 a 99%
-        if (porcentagem > 90) mensagem = '💍 Alma gêmea detectada!';
-        else if (porcentagem > 75) mensagem = '😍 Tem tudo pra dar certo!';
-        else if (porcentagem > 55) mensagem = '💞 Há química, mas precisa de paciência!';
-        else mensagem = '😅 Amizade é o melhor caminho!';
+        const encontrado = casaisFixos.some(casal =>
+            (casal[0] === nome1 && casal[1] === nome2) || 
+            (casal[0] === nome2 && casal[1] === nome1)
+        );
+
+        if (encontrado) {
+            porcentagem = 100;
+            mensagem = '💍 Alma gêmea detectada!';
+            criarConfetes();
+        } else if (
+            (nome1 === 'sophia' && nome2 === 'thais') ||
+            (nome1 === 'thais' && nome2 === 'sophia')
+        ) {
+            porcentagem = Math.floor(Math.random() * 10) + 40;
+            mensagem = '😅 Parece que não vai dar certo...';
+        } else {
+            porcentagem = Math.floor(Math.random() * 60) + 40;
+            if (porcentagem > 90) mensagem = '💍 Alma gêmea detectada!';
+            else if (porcentagem > 75) mensagem = '😍 Tem tudo pra dar certo!';
+            else if (porcentagem > 55) mensagem = '💞 Há química, mas precisa de paciência!';
+            else mensagem = '😅 Amizade é o melhor caminho!';
+        }
     }
 
     document.querySelector('.resultado')?.remove();
@@ -209,10 +232,6 @@ document.getElementById('form-jogo').addEventListener('submit', function(e){
         const svg = resultadoDiv.querySelector('svg');
         if(porcentagem >= 80){
             svg.style.animation = 'batimento 0.8s infinite';
-        }
-
-        if(porcentagem === 100){
-            criarConfetes();
         }
     }, 100);
 });
