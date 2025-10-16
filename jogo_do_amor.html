@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Jogo do Amor 💘</title>
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at center, #8b0034, #40001b);
+    background-image: url('https://static.vecteezy.com/ti/fotos-gratis/p1/10136810-muitos-coracoes-vermelhos-foto.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    color: white;
+    position: relative;
+}
+#tela-inicial { text-align: center; animation: aparecer 1s ease; }
+#tela-inicial h1 { font-family: 'Brush Script MT', cursive; font-size: 3em; color: #fff; text-shadow: 2px 2px 8px #ff2f65; }
+#tela-inicial button { margin-top: 20px; padding: 15px 40px; font-size: 1.3em; color: white; background: linear-gradient(180deg, #ff4b6e, #c70039); border: none; border-radius: 30px; cursor: pointer; box-shadow: 0 5px 10px rgba(0,0,0,0.3); transition: transform 0.2s; }
+#tela-inicial button:hover { transform: scale(1.05); }
+
+#tela-jogo { display: none; background: rgba(255, 255, 255, 0.15); border-radius: 20px; box-shadow: 0 0 20px rgba(255, 255, 255, 0.2); padding: 30px; width: 350px; backdrop-filter: blur(5px); text-align: center; animation: aparecer 1s ease; }
+input[type="text"] { width: 90%; padding: 10px; margin: 10px 0; border-radius: 10px; border: none; text-align: center; font-size: 1.1em; }
+.sexo-btns { display: flex; justify-content: center; gap: 10px; margin-bottom: 10px; }
+.sexo-btns label { background-color: rgba(255,255,255,0.2); border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+.sexo-btns input { display: none; }
+.sexo-btns label:hover { background-color: rgba(255,255,255,0.4); }
+.sexo-btns input:checked + label { background-color: #ff3864; }
+button[type="submit"] { background: linear-gradient(180deg, #ff4b6e, #c70039); border: none; padding: 15px 40px; color: white; font-size: 1.2em; border-radius: 30px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 5px 10px rgba(0,0,0,0.3); margin-top: 15px; }
+button[type="submit"]:hover { transform: scale(1.05); }
+.resultado { margin-top: 25px; font-size: 1.3em; animation: aparecer 0.8s ease; text-align: center; }
+
+.heart-container {
+    width: 150px;
+    height: 150px;
+    margin: 15px auto;
+    position: relative;
+}
+.heart-bg {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 2;
+}
+.heart-fill {
+    fill: url(#gradHeart);
+    transform-origin: bottom;
+    transform: scaleY(0);
+    transition: transform 1s ease;
+}
+
+/* Batimento do coração */
+@keyframes batimento {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.1); }
+    50% { transform: scale(1); }
+    75% { transform: scale(1.1); }
+}
+
+/* Confetes / corações caindo */
+.heart-fall {
+    position: absolute;
+    font-size: 20px;
+    animation: cair linear forwards;
+}
+@keyframes cair {
+    0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+}
+
+@keyframes aparecer { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+
+</style>
+</head>
+<body>
+
+<div id="tela-inicial">
+    <h1>💘 Jogo do Amor 💘</h1>
+    <button id="btn-comecar">Começar 💞</button>
+</div>
+
+<div id="tela-jogo">
+    <h2>💞 Teste de Compatibilidade 💞</h2>
+    <form id="form-jogo">
+        <label>Primeiro Nome:</label>
+        <input type="text" name="nome1" required>
+
+        <div class="sexo-btns">
+            <input type="radio" id="m1" name="sexo1" value="Masculino" required>
+            <label for="m1">♂</label>
+            <input type="radio" id="f1" name="sexo1" value="Feminino" required>
+            <label for="f1">♀</label>
+        </div>
+
+        <label>Segundo Nome:</label>
+        <input type="text" name="nome2" required>
+
+        <div class="sexo-btns">
+            <input type="radio" id="m2" name="sexo2" value="Masculino" required>
+            <label for="m2">♂</label>
+            <input type="radio" id="f2" name="sexo2" value="Feminino" required>
+            <label for="f2">♀</label>
+        </div>
+
+        <button type="submit">Calcular 💖</button>
+    </form>
+</div>
+
+<script>
+document.getElementById('btn-comecar').addEventListener('click', () => {
+    document.getElementById('tela-inicial').style.display = 'none';
+    document.getElementById('tela-jogo').style.display = 'block';
+});
+
+function criarConfetes() {
+    for(let i=0;i<30;i++){
+        const c = document.createElement('div');
+        c.className = 'heart-fall';
+        c.style.left = Math.random()*window.innerWidth+'px';
+        c.style.animationDuration = 2+Math.random()*3+'s';
+        c.style.fontSize = 15+Math.random()*25+'px';
+        c.innerText = '💖';
+        document.body.appendChild(c);
+        setTimeout(()=>c.remove(), 5000);
+    }
+}
+
+document.getElementById('form-jogo').addEventListener('submit', function(e){
+    e.preventDefault();
+
+    const nome1 = this.nome1.value.trim().toLowerCase();
+    const nome2 = this.nome2.value.trim().toLowerCase();
+    const sexo1 = this.sexo1.value;
+    const sexo2 = this.sexo2.value;
+
+    const casaisFixos = [['thais','paula'],['joao','maria']];
+    let porcentagem = 0;
+    let mensagem = '';
+
+    const encontrado = casaisFixos.some(casal =>
+        (casal[0] === nome1 && casal[1] === nome2) || (casal[0] === nome2 && casal[1] === nome1)
+    );
+
+    if (encontrado) {
+        porcentagem = 100;
+        mensagem = '💍 Alma gêmea detectada!';
+    } else {
+        const seedStr = nome1 + sexo1 + nome2 + sexo2;
+        let hash = 0;
+        for (let i=0; i<seedStr.length; i++) hash = ((hash << 5) - hash) + seedStr.charCodeAt(i);
+        hash = Math.abs(hash);
+        porcentagem = 40 + (hash % 61);
+        if (porcentagem > 90) mensagem = '💍 Alma gêmea detectada!';
+        else if (porcentagem > 75) mensagem = '😍 Tem tudo pra dar certo!';
+        else if (porcentagem > 55) mensagem = '💞 Há química, mas precisa de paciência!';
+        else mensagem = '😅 Amizade é o melhor caminho!';
+    }
+
+    document.querySelector('.resultado')?.remove();
+
+    const resultadoDiv = document.createElement('div');
+    resultadoDiv.className = 'resultado';
+    resultadoDiv.innerHTML = `<p><strong>${this.nome1.value}</strong> 💞 <strong>${this.nome2.value}</strong></p>
+        <p>Compatibilidade: <strong>${porcentagem}%</strong></p>
+        <p>${mensagem}</p>
+        <div class="heart-container">
+            <svg viewBox="0 0 32 29.6">
+                <defs>
+                    <linearGradient id="gradHeart" x1="0" y1="1" x2="0" y2="0">
+                        <stop offset="0%" stop-color="#ff4b6e"/>
+                        <stop offset="100%" stop-color="#c70039"/>
+                    </linearGradient>
+                </defs>
+                <path class="heart-bg" d="M23.6,0c-2.7,0-5,1.5-6,3.7C16.4,1.5,14.1,0,11.4,0C5.1,0,0,5.1,0,11.4c0,6.8,11.6,13.2,16,18.2c4.4-5,16-11.4,16-18.2 C32,5.1,26.9,0,23.6,0z"/>
+                <clipPath id="heartClip">
+                    <path d="M23.6,0c-2.7,0-5,1.5-6,3.7C16.4,1.5,14.1,0,11.4,0C5.1,0,0,5.1,0,11.4c0,6.8,11.6,13.2,16,18.2c4.4-5,16-11.4,16-18.2 C32,5.1,26.9,0,23.6,0z"/>
+                </clipPath>
+                <rect class="heart-fill" width="32" height="29.6" clip-path="url(#heartClip)"/>
+            </svg>
+        </div>`;
+    this.appendChild(resultadoDiv);
+
+    const heartFill = resultadoDiv.querySelector('.heart-fill');
+    setTimeout(() => {
+        heartFill.style.transform = `scaleY(${porcentagem/100})`;
+
+        // batimento se acima de 80%
+        const svg = resultadoDiv.querySelector('svg');
+        if(porcentagem >= 80){
+            svg.style.animation = 'batimento 0.8s infinite';
+        }
+
+        // confetes se 100%
+        if(porcentagem === 100){
+            criarConfetes();
+        }
+
+    }, 100);
+});
+</script>
+
+</body>
+</html>
