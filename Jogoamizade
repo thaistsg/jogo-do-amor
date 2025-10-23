@@ -1,0 +1,310 @@
+<?php
+session_start();
+
+// === CONFIGURAÇÃO DAS AMIGAS ===
+$USERS = [
+    'Paola'=>[
+        'photo'=>'https://i.imgur.com/Cv5vGLY.jpeg',
+        'age'=>17,
+        'desc'=>'Paola é uma amiga alegre, divertida e cheia de energia!',
+        'birthday'=>'18012008',
+        'trueSecret'=>"💗Paola💗
+uma amiga linda(muito Linda mesmo),
+Estar contigo é divertido, 
+amor brincar com você(mesmo você querendo me matar de vez em quando kkkkk) 
+Teu olhar e  seu jeito sao  único
+Passar  o tempo com você é muito bom 
+Tua presença é forte, marcante e leve ao mesmo tempo.
+
+assinado com carinho: Thai☀️💗
+ 💖"
+    ],
+    'Paula'=>[
+        'photo'=>'https://i.imgur.com/skvcx12.png',
+        'age'=>17,
+        'desc'=>'Paula é doce, carinhosa e maravilhosa!',
+        'birthday'=>'18012008',
+        'trueSecret'=> <<<TXT
+💖Paula💖
+Você é uma amiga incrível (muito mesmo).
+Sua companhia é tão confortante que eu queria ficar abraçada em você por muito, mas muito tempo, sem te soltar.
+Você é uma pessoa de um coração tão grande — um amor, uma diva!
+Sua risada escandalosa é inconfundível, e eu amo isso.
+Seu sorriso é lindo, e seus olhos, o seu olhar... são tão marcantes que eu poderia passar o tempo todo te admirando.
+Seu cheiro é único e tão bom.
+Sua presença e sua energia são tão boas de se ter por perto.
+Uma pessoa perfeita, um amor.
+Você é tão incrível pra mim que eu acho que você não tem noção.
+Eu poderia escrever um livro de centenas de páginas só pra você, pra te contar tudo. 💖
+Hoje, dia 22/10/2025,
+hoje no if eu queria te falar o quanto você estava linda (muito mesmo),
+como seu cabelo estava lindo e tão perfeito.
+Hoje é todo dia que eu queria te falar isso, na verdade, mas tenho vergonha por algum motivo kkkkkk.
+Mas eu resolvi fazer todo esse código para te contar essas coisas, espero que goste.
+Assinado com carinho: Thais💖
+TXT
+    ],
+    'Sophia'=>[
+        'photo'=>'https://i.imgur.com/gKwnPay.jpeg',
+        'age'=>17,
+        'desc'=>'Sophia tem um brilho único, sempre espalhando alegria ✨',
+        'birthday'=>'01122007',
+        'trueSecret'=>"🌸 Sophia✨💛
+ Sophia, um raio de sol disfarçado de gente.
+ Você tem um brilho de um jeito diferente — um brilho que ilumina a vida das pessoas ao seu redor.
+ Tua risada estranha (que eu morro de rir toda vez e depois falo “Sophia, para de ser estranha”) é a risada que cura o dia de qualquer um, e tua amizade é um refúgio tranquilo em meio ao caos.
+ Conversar com você é confortante, você sempre ajuda com algum problema e dá conselhos pra tentar ajudar.
+ Amo rir com você de qualquer coisa, sem se preocupar em parecer idiota.
+amo conversar com você sobre tudo mesmo(livro, série, filme),
+ Você é doce, gentil e sempre com um jeitinho de tornar tudo mais bonito.
+ Com teu coração enorme e tua alma radiante, dá vontade de guardar tua presença em um potinho de amor. ✨💛
+Assinado com carinho: Thathai ✨💛
+ 💖"
+    ],
+    'Ana Clara'=>[
+        'photo'=>'imagens/anaclara.jpg',
+        'age'=>17,
+        'desc'=>'Ana Clara é doce, gentil e cheia de sonhos 💫',
+        'birthday'=>'02112007',
+        'trueSecret'=>"💖 Ana Clara 💖
+Uma amiga que tem a alma doce.
+Você é única.
+Você é estranha às vezes kkkk.
+Uma amiga linda, divertida (chata às vezes — brincadeira kkkkk).
+Amo ser sua amiga.
+Amo sua amizade, amo sair e conversar com você — conversar sobre tudo e rir de qualquer coisa.
+
+Assinado com carinho: 💖 Thathai 💖"
+    ],
+    'Ana Maria'=>[
+        'photo'=>'https://i.imgur.com/jVfeabT.jpeg',
+        'age'=>16,
+        'desc'=>'Ana Maria é divertida, carinhosa e sempre ilumina o ambiente 🌸',
+        'birthday'=>'08092009',
+        'trueSecret'=>"☀️💗 Ana Maria ☀️💗
+Você é uma amiga incrível, divertida.
+Tua energia é contagiante, seu sorriso é único, e sua amizade é abrigo.
+Você é amorosa e tem um jeitinho de transformar qualquer momento em algo memorável com suas piadas e suas brincadeiras.
+Teu carinho é daqueles que a gente sente mesmo de longe, e tua presença deixa tudo mais leve e alegre.
+Sempre posso confiar em você para contar algo.
+Você me conhece há 16 anos, uma amizade muito boa.
+Uma amizade verdadeira.
+Alguns esportes como futsal e judô que uniu mais a gente.
+Você é única, uma amiga que dá vontade de guardar pra sempre no coração. ☀️💗
+
+Assinado com carinho: Thais ☀️💗"
+    ],
+];
+
+// Login
+$loginError = '';
+if($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['login'])){
+    $nome = trim($_POST['nome'] ?? '');
+    $senha = trim($_POST['senha'] ?? '');
+    if(isset($USERS[$nome])){
+        if($senha === $USERS[$nome]['birthday']){
+            $_SESSION['logged_user'] = $nome;
+            $_SESSION['quizDone'] = false;
+            $_SESSION['secretPassword'] = '';
+            header('Location: '.$_SERVER['PHP_SELF']);
+            exit;
+        } else $loginError = 'Senha incorreta.';
+    } else $loginError = 'Usuário não encontrado.';
+}
+
+// Logout
+if(isset($_GET['logout'])){
+    session_destroy();
+    header('Location: '.$_SERVER['PHP_SELF']);
+    exit;
+}
+
+$loggedUser = $_SESSION['logged_user'] ?? null;
+$currentUser = $loggedUser ? $USERS[$loggedUser] : null;
+?>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Amigas da Thais 💖</title>
+<style>
+body{font-family:'Poppins',sans-serif;margin:0;padding:0;background:#fff6fb;display:flex;justify-content:center;align-items:flex-start;min-height:100vh;}
+.center-card{max-width:520px;width:90%;background:#fff;padding:20px;margin-top:40px;border-radius:20px;box-shadow:0 8px 30px rgba(255,111,163,0.25);text-align:center;}
+img{width:120px;height:120px;border-radius:50%;margin-bottom:10px;}
+button,input,select{font-family:inherit;padding:10px;border-radius:10px;border:1px solid #f0d8e6;width:100%;margin:6px 0;}
+button{background:linear-gradient(145deg,#ffb6da,#ff89b2);color:white;font-weight:600;border:0;cursor:pointer;transition:.25s;}
+button:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,0.06);}
+.hidden{display:none!important;}
+.secret-btn{margin-top:12px;padding:12px;border-radius:50px;background:linear-gradient(145deg,#ffb6da,#ff89b2);color:#fff;font-size:1em;cursor:pointer;position:relative;}
+.particle{position:fixed;pointer-events:none;user-select:none;animation:fall linear forwards;opacity:0.95;z-index:9999;}
+.secretText{margin-top:20px;padding:15px;border-radius:12px;background:linear-gradient(145deg,#fff0f4,#ffe3ee);color:#4a333f;font-weight:600;text-align:left;white-space:pre-line;}
+.board{display:grid;grid-template-columns:repeat(4,70px);gap:10px;justify-content:center;padding:16px;}
+.card{width:70px;height:70px;border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;user-select:none;transition:transform .25s,background .25s;}
+.card.flipped{background:linear-gradient(180deg,#fff,#ffeef6);transform:rotateY(180deg);}
+.card.matched{background:#ffe0ed;border-color:#ff6fa3;pointer-events:none;}
+@keyframes fall{0%{transform:translateY(-20vh) rotate(0deg);}100%{transform:translateY(120vh) rotate(540deg);opacity:0;}}
+</style>
+</head>
+<body>
+<main class="center-card">
+
+<?php if(!$loggedUser): ?>
+<h1>💞 Amigas da Thais 💞</h1>
+<p>Faça login com seu nome e senha (data de aniversário)</p>
+<?php if($loginError): ?><div style="color:red;"><?=$loginError?></div><?php endif; ?>
+<form method="post">
+<input name="nome" placeholder="Seu nome" required>
+<input name="senha" placeholder="Data de aniversário (dd/mm/aaaa)" required>
+<button type="submit" name="login">Entrar</button>
+</form>
+
+<?php else: ?>
+<img src="<?=$currentUser['photo']?>" alt="<?=$loggedUser?>">
+<h1><?=$loggedUser?></h1>
+<div>🎂 <?=$currentUser['age']?> anos</div>
+<div class="secretText"><?=$currentUser['desc']?></div>
+
+<button id="startBtn" class="secret-btn">💖 Ficou curiosa? Quer jogar e descobrir segredos?</button>
+
+<div id="gameArea" class="hidden" style="margin-top:15px;">
+<h3>🎮 Jogo da Memória</h3>
+<div class="board" id="board"></div>
+<p id="moves">Jogadas: 0</p>
+<button id="resetBtn">🔁 Reiniciar</button>
+</div>
+
+<div id="secretArea" class="hidden" style="margin-top:20px;">
+<h3>🔐 Área Secreta</h3>
+<p>Digite a senha para entrar na Área Secreta:</p>
+<input id="areaInput" placeholder="Digite a senha">
+<button id="areaBtn">Entrar</button>
+
+<div id="quizArea" class="hidden" style="margin-top:20px;">
+<h3>📝 Quiz</h3>
+<form id="quizForm">
+<label>1️⃣ Qual seu nome?</label>
+<select name="nome" required>
+<option value="">Selecione</option>
+<option>Paola</option><option>Paula</option><option>Sophia</option><option>Ana Clara</option><option>Ana Maria</option>
+</select>
+<label>2️⃣ Qual sua idade?</label>
+<select name="idade" required>
+<option value="">Selecione</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
+</select>
+<label>3️⃣ Qual sua cor favorita?</label><input name="cor" required>
+<label>4️⃣ Você gosta de algum esporte?</label><input name="esporte" required>
+<label>5️⃣ Qual sua comida favorita?</label><input name="comida" required>
+<label>6️⃣ Qual sua música favorita?</label><input name="musica" required>
+<label>7️⃣ Você tem algum hobby?</label><input name="hobby" required>
+<label>8️⃣ Se pudesse ter um superpoder, qual seria?</label><input name="superpoder" required>
+<button type="submit">✅ Enviar Quiz</button>
+</form>
+</div>
+
+<div id="finalSecret" class="secretText hidden"><?=$currentUser["trueSecret"]?></div>
+</div>
+
+<button onclick="location.href='?logout=1'" style="margin-top:12px;">Sair</button>
+<?php endif; ?>
+</main>
+
+<script>
+// Jogo da memória
+const startBtn = document.getElementById('startBtn');
+const gameArea = document.getElementById('gameArea');
+const board = document.getElementById('board');
+const movesEl = document.getElementById('moves');
+
+const icons=['💖','🌸','⭐','🍀','🎵','🌟'];
+let cards=[],first=null,second=null,lock=false,moves=0,matches=0;
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}}
+function buildCards(){cards=[];let pairSrc=icons.slice(0,6);pairSrc.forEach(ic=>{cards.push({icon:ic,id:Math.random()});cards.push({icon:ic,id:Math.random()});});shuffle(cards);}
+function renderBoard(){board.innerHTML='';cards.forEach((c,i)=>{const el=document.createElement('div');el.className='card';el.dataset.index=i;el.textContent='';el.addEventListener('click',()=>onCardClick(el,c));board.appendChild(el);});}
+function onCardClick(el,card){
+if(lock||el.classList.contains('flipped')) return;
+el.classList.add('flipped');el.textContent=card.icon;
+if(!first){first={el,card};} else if(!second){second={el,card};lock=true;moves++;movesEl.textContent='Jogadas: '+moves;
+if(first.card.icon===second.card.icon){
+setTimeout(()=>{first.el.classList.add('matched');second.el.classList.add('matched');first=null;second=null;lock=false;matches++;
+if(matches===cards.length/2){
+alert('🎉 Parabéns! Você completou o jogo!');
+let senha = 'SENHA'+Math.floor(Math.random()*9000+1000);
+sessionStorage.setItem('secretPassword', senha);
+document.getElementById('secretArea').classList.remove('hidden');
+document.getElementById('secretArea').querySelector('p').textContent = 'Digite a senha para entrar na Área Secreta: ('+senha+')';
+gameArea.classList.add('hidden');
+}
+},350);
+} else {setTimeout(()=>{first.el.classList.remove('flipped');first.el.textContent='';second.el.classList.remove('flipped');second.el.textContent='';first=null;second=null;lock=false;},650);}
+}}
+
+startBtn.onclick=()=>{
+startBtn.classList.add('hidden');
+gameArea.classList.remove('hidden');
+buildCards();renderBoard();moves=0;matches=0;movesEl.textContent='Jogadas: 0';
+};
+
+document.getElementById('resetBtn').onclick=()=>{buildCards();renderBoard();moves=0;matches=0;movesEl.textContent='Jogadas: 0';};
+
+// Área Secreta
+const areaBtn = document.getElementById('areaBtn');
+areaBtn.onclick = () => {
+const input = document.getElementById('areaInput').value;
+const stored = sessionStorage.getItem('secretPassword');
+if(input===stored){
+document.getElementById('quizArea').classList.remove('hidden');
+alert('Senha correta! Bem-vindo à Área Secreta.');
+} else alert('Senha incorreta!');
+};
+
+// Quiz + botão secreto
+const quizForm = document.getElementById('quizForm');
+const finalSecret = document.getElementById('finalSecret');
+
+quizForm.onsubmit = e => {
+    e.preventDefault();
+    quizForm.classList.add('hidden');
+
+    // Botão só aparece após quiz
+    let btn = document.createElement('button');
+    btn.textContent = '💖 Quer saber o segredo de verdade?';
+    btn.className = 'secret-btn';
+    document.body.appendChild(btn);
+    let clicks = 0;
+
+    function spawnConfetti(){
+        for(let i=0;i<150;i++){
+            const p=document.createElement('div');
+            p.className='particle';
+            p.style.left=Math.random()*100+'vw';
+            p.style.top='-10px';
+            p.style.width=p.style.height='10px';
+            p.style.background=['#ff6fa3','#ff8fb8','#ffdbe8','#fff0f4','#ffaadf','#ff6fa3'][Math.floor(Math.random()*6)];
+            p.style.borderRadius='50%';
+            document.body.appendChild(p);
+            const fall=p.animate([{transform:'translateY(0) rotate(0deg)'},{transform:'translateY(100vh) rotate(720deg)'}],{duration:2000,easing:'linear'});
+            fall.onfinish=()=>p.remove();
+        }
+    }
+
+    btn.onclick = () => {
+        if(clicks < 9){
+            clicks++;
+            btn.style.position='absolute';
+            btn.style.top=Math.random()*70+'vh';
+            btn.style.left=Math.random()*70+'vw';
+        } else {
+            spawnConfetti();
+            btn.remove();
+            finalSecret.classList.remove('hidden');
+        }
+    };
+};
+</script>
+</body>
+</html>
